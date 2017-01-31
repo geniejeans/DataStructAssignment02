@@ -59,13 +59,13 @@ void LinkedList::push_back(int data)
 
 int LinkedList::pop_front()
 {
-	if (size() > 0)
+	if (head_ != NULL)
 	{
-		Node** temp = &head_;
+		Node* temp = head_->next;
 		int dataPopped = head_->data;
-		head_ = (*temp)->next;
-		*temp = NULL; //Setting pointer to NULL so that it can be deleted
-		delete *temp;
+		head_ = NULL; //Setting pointer to NULL so that it can be deleted
+		delete head_;
+		head_ = temp;
 		return dataPopped;
 	}
 
@@ -75,18 +75,33 @@ int LinkedList::pop_front()
 
 int LinkedList::pop_back()
 {
-	if (size() > 0)
+	if (head_ != NULL)
 	{
-		Node** end = &head_->next;
+		Node* nextToEnd = head_;
+		Node* lastNode = head_->next;
 		int dataPopped = 0;
 
-		while ((*end)->next != NULL)
-			*end = (*end)->next;
+		if (lastNode == NULL)
+		{
+			return pop_front();
+		}
 
-		dataPopped = (*end)->data;
-		*end = NULL;
-		delete *end;
-		return dataPopped;
+		else
+		{
+			while (lastNode->next != NULL)
+			{
+				nextToEnd = lastNode;
+				lastNode = lastNode->next;
+			}
+
+
+			dataPopped = lastNode->data;
+			lastNode = NULL;
+			delete lastNode;
+			nextToEnd->next = NULL;
+			return dataPopped;
+		}
+		
 	}
 
 	else
@@ -106,7 +121,7 @@ void LinkedList::insert_at(int pos, int data)
 		Node* newNode = new Node(data);
 		int count = 0;
 
-		if (pos < 0)
+		if (pos < 0) //For negative positions
 			pos = 0;
 
 		if (pos == 0)
@@ -125,7 +140,7 @@ void LinkedList::insert_at(int pos, int data)
 				}
 				else
 				{
-					prev = curr;
+					prev = curr; //Moving through the list
 					curr = curr->next;
 				}
 			}
@@ -143,14 +158,12 @@ int LinkedList::pop_at(int pos)
 	int nodePopped = 0;
 	int count = 0;
 
-	if (pos < 0)
+	if (pos < 0) //For negative positions
 		pos = 0;
 
 	if (pos == 0)
 	{
-		nodePopped = head_->data;
-		pop_front();
-		return nodePopped;
+	    return	pop_front();
 	}
 
 	else
@@ -171,7 +184,7 @@ int LinkedList::pop_at(int pos)
 
 				else
 				{
-					pop_back();
+					return pop_back();
 				}
 			}
 			else
@@ -207,7 +220,7 @@ size_t LinkedList::size()
 //*******************************************************************//
 // Queue stuff
 //*******************************************************************//
-Queue::Queue() 
+Queue::Queue() : front_(NULL), back_(NULL)
 {
 }
 
@@ -217,16 +230,52 @@ Queue::~Queue()
 
 void Queue::enqueue(int data)
 {   
+	Node* newNode = new Node(data);
+	if (front_ == NULL) //If this is the first time making a new list
+	{
+		front_ = newNode;
+		back_ = newNode;
+	}	
+	else
+	{
+		back_->next = newNode;
+		back_ = newNode;
+	}
+
 }
 
 int Queue::dequeue()
 {
+	if (front_ != NULL)
+	{
+		Node** temp = &front_;
+		int dataPopped = front_->data;
+		Node* transfer = (*temp)->next;
+		*temp = NULL; //Setting pointer to NULL so that it can be deleted
+		delete *temp;
+		front_ = transfer;
+		return dataPopped;
+	}
+	else
     return 0;
 }
 
 size_t Queue::size()
 {
-    return 0;
+	Node* curr = front_;
+	size_t counter = 0;
+	if (front_ == NULL)
+		counter = 0;
+	else
+	{
+		while (curr)
+		{
+			counter++;
+			curr = curr->next;
+		}
+	}
+
+	return counter;
 }
 
 //*******************************************************************//
