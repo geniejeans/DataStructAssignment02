@@ -42,8 +42,7 @@ LinkedList::~LinkedList()
 
 void LinkedList::push_front(int data)
 {
-	Node *newNode = new Node();
-	newNode->data = data;
+	Node *newNode = new Node(data);
 	newNode->next = head_;
 	head_ = newNode;
 }
@@ -51,8 +50,7 @@ void LinkedList::push_front(int data)
 void LinkedList::push_back(int data)
 {
 	Node *curr = head_;
-	Node *newNode = new Node();
-	newNode->data = data;
+	Node *newNode = new Node(data);
 	while (curr->next)
 		curr = curr->next;
 	curr->next = newNode;
@@ -105,8 +103,7 @@ void LinkedList::insert_at(int pos, int data)
 	{
 		Node* prev = head_;
 		Node* curr = head_->next;
-		Node* newNode = new Node();
-		newNode->data = data;
+		Node* newNode = new Node(data);
 		int count = 0;
 
 		if (pos < 0)
@@ -193,11 +190,17 @@ size_t LinkedList::size()
 {
 	Node* curr = head_;
 	size_t counter = 0;
-	while (curr)
+	if (head_ == NULL)
+		counter = 0;
+	else
 	{
-		counter++;
-		curr = curr->next;
+		while (curr)
+		{
+			counter++;
+			curr = curr->next;
+		}
 	}
+
     return counter;
 }
 
