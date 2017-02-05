@@ -176,54 +176,34 @@ void LinkedList::insert_at(int pos, int data)
 
 int LinkedList::pop_at(int pos)
 {
-	Node** prev = &head_;
-	Node** curr = &head_->next;
 	int nodePopped = 0;
 	int count = 0;
 
-	if (pos < 0) //For negative positions
-	{
+	if (head_ == NULL) //For empty lists
+		return 0;
+	else if (pos <= 0) //For negative positions and 0
 		return	pop_front();
-	}
-
-	else if (pos == 0)
-	{
-	    return	pop_front();
-	}
-
 	else
 	{
-		if (head_ != NULL)
-		{
-			while (*curr != NULL)
+		Node* prev = head_;
+		Node* curr = head_->next;
+			while (curr != NULL)
 			{
 				count++;
 				if (pos == count)
 				{
-					nodePopped = (*curr)->data;
-					if ((*curr)->next != NULL)
-					{
-						(*prev)->next = (*curr)->next; //Removing node if at the right position
-						delete *curr;
+					nodePopped = curr->data;
+						prev->next = curr->next; //Removing node if at the right position
+						delete curr;
 						return nodePopped;
-					}
-
-					else
-					{
-						return pop_back();
-					}
 				}
-				else
-				{
-					*prev = *curr;
-					*curr = (*curr)->next;
-				}
+					prev = curr;
+					curr = curr->next;
 			}
 			//Returning values outside of for loop
 			if (pos > count) //if the value is over the number of positions
 				return 0;
-		}
-		return 0;
+			return 0;
 	}
    
 }
