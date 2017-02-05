@@ -435,7 +435,7 @@ bool Brackets(const string& input)
 	if (openingBrackets.size() == 0) //For every opening bracket, and closing backet is matched, the opening bracket will be popped
 		return true;
 	else
-		false;
+		return false;
 	
 }
 
