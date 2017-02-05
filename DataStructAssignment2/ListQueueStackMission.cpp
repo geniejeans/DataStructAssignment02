@@ -58,7 +58,11 @@ void LinkedList::push_front(int data)
 		newNode->next = head_;
 		head_ = newNode;
 	}
-
+	else //If there is nothing in the list
+	{
+		Node *newNode = new Node(data);
+		head_ = newNode; 
+	}
 }
 
 void LinkedList::push_back(int data)
@@ -72,19 +76,23 @@ void LinkedList::push_back(int data)
 		curr->next = newNode;
 		newNode->next = NULL; //Emptying next of last node
 	}
+	else //If there is nothing in the list
+	{
+		Node *newNode = new Node(data);
+		head_ = newNode;
+	}
 }
 
 int LinkedList::pop_front()
 {
 	if (head_ != NULL)
 	{
-		Node* temp = head_->next;
-		int dataPopped = head_->data; //Value of data popped
+		Node* temp = head_;
+		head_ = head_->next; //Reassigning head
+		int dataPopped = temp->data; //Value of data popped
 		delete temp; //Deleting
-		head_ = temp; //Reassigning head
 		return dataPopped;
 	}
-
 	else
     return 0;
 }
@@ -280,12 +288,25 @@ int Queue::dequeue()
 {
 	if (front_ != NULL)
 	{
-		Node* temp = front_;
-		int dataPopped = front_->data;
-		Node* transfer = temp->next; //Skipping first node of the queue 
-		delete temp; //deleting front node
-		front_ = transfer; //Reassigning front node 
-		return dataPopped;
+		if (front_ != back_)
+		{
+			Node* temp = front_;
+			int dataPopped = front_->data;
+			Node* transfer = temp->next; //Skipping first node of the queue 
+			delete temp; //deleting front node
+			front_ = transfer; //Reassigning front node 
+			return dataPopped;
+		}
+		else
+		{
+			Node* temp = front_;
+			int dataPopped = front_->data;
+			Node* transfer = temp->next; //Skipping first node of the queue 
+			delete temp; //deleting front node
+			front_ = transfer; //Reassigning front node 
+			back_ = front_; //Making the front same as back
+			return dataPopped;
+		}
 	}
 	else
     return 0;
@@ -410,11 +431,11 @@ bool Brackets(const string& input)
 			}
 			
 		}
-		if (openingBrackets.size() == 0) //For every opening bracket, and closing backet is matched, the opening bracket will be popped
-			return true;
-		else
-			false;
 	}
+	if (openingBrackets.size() == 0) //For every opening bracket, and closing backet is matched, the opening bracket will be popped
+		return true;
+	else
+		false;
 	
 }
 
