@@ -80,7 +80,7 @@ int LinkedList::pop_front()
 	{
 		Node* temp = head_->next;
 		int dataPopped = head_->data; //Value of data popped
-		delete head_; //Deleting head
+		delete temp; //Deleting
 		head_ = temp; //Reassigning head
 		return dataPopped;
 	}
@@ -378,57 +378,44 @@ size_t Stack::size()
 // Balanced parenthesis
 bool Brackets(const string& input)
 {
-	bool result = true;
-	vector<char> data; //Contains half of input & turning input string into a char
-	vector<char> reversedData;
-	int stringSize = input.size();
-	int counter = 0; //counter for accessing the vector
-	if (stringSize % 2 != 0)
-		return false;
-	for (int i = 0; i <= (stringSize / 2 - 1); i++) //Only getting half of the input, which is the opening parenthesis 
+	Stack openingBrackets; //Containing only opening brackets
+	int inputLength = input.size();
+	for (int i = 0; i < inputLength; i++)
 	{
-		if ((input[i] == '(') || (input[i] == '{') || (input[i] == '[') || (input[i] == '<')) //Checking for opening parenthesis only 
-			data.push_back(input[i]);
-		else
+		if ((input[i] == '(') || (input[i] == '{') || (input[i] == '[') || (input[i] == '<'))
+			openingBrackets.push(input[i]);
+		else if ((input[i] == ')') || (input[i] == '}') || (input[i] == ']') || (input[i] == '>')) 
 		{
-			result = false;
-			break;
+			if (openingBrackets.size() == 0) //Checking if first bracket is closing
+				return false;
+			//Checking if the closing brackets match the opening brackets or not
+			switch (input[i])
+			{
+			case ')':
+				if (openingBrackets.pop() != 40)
+					return false;
+				break;
+			case '}':
+				if (openingBrackets.pop() != 123)
+					return false;
+				break;
+			case ']':
+				if (openingBrackets.pop() != 91)
+					return false;
+				break;
+			case '>':
+				if (openingBrackets.pop() != 60)
+					return false;
+				break;
+			}
+			
 		}
+		if (openingBrackets.size() == 0) //For every opening bracket, and closing backet is matched, the opening bracket will be popped
+			return true;
+		else
+			false;
 	}
-	//Reversing data
-	for (unsigned i = data.size(); i-- > 0;)
-	{
-		reversedData.push_back(data.at(i));
-	}
-
-   for (int i = stringSize / 2; i <= stringSize - 1; i++)
-   {
-	   //Conditions for if the parenthesis don't match up to its closing parenthesis
-	   if ((reversedData.at(counter) == '(') && (input[i] != ')'))
-	   {
-		   result = false;
-		   break;
-	   }
 	
-	   else if ((reversedData.at(counter) == '{') && (input[i] != '}'))
-	   {
-		   result = false;
-		   break;
-	   }
-	   else if ((reversedData.at(counter) == '[') && (input[i] != ']'))
-	   {
-		   result = false;
-		   break;
-	   }
-	   else if ((reversedData.at(counter) == '<') && (input[i] != '>'))
-	   {
-		   result = false;
-		   break;
-	   }
-	   counter++;
-   }
-
-   return result;
 }
 
 // Query machine, hits
