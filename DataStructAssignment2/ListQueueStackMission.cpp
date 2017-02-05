@@ -233,7 +233,7 @@ void Queue::enqueue(int data)
 	Node* newNode = new Node(data);
 	if (front_ == NULL) //If this is the first time making a new list
 	{
-		front_ = newNode;
+		front_ = newNode; //front and back pointing to same node
 		back_ = newNode;
 	}	
 	else
@@ -281,7 +281,7 @@ size_t Queue::size()
 //*******************************************************************//
 // Stack stuff
 //*******************************************************************//
-Stack::Stack()
+Stack::Stack() : top_(NULL)
 {
 
 }
@@ -292,16 +292,44 @@ Stack::~Stack()
 
 void Stack::push(int data)
 {
+	Node *push = new Node(data); //pointer to new data 
+	push->next = top_; //setting top as next node 
+	top_ = push; //new top assigned
 }
 
 int Stack::pop()
 {
+	if (top_ != NULL)
+	{
+		Node *nodePop = top_; //Pointing to top
+		int nodePopped = top_->data;
+		Node *nextNode = nodePop->next; //Ignoring first node of top, pointing to second node
+		nodePop = NULL;
+		delete nodePop;
+		top_ = nextNode; //Top is reassigned to its next node
+		return nodePopped;
+	}
+
+
+	else
     return 0;
 }
 
 size_t Stack::size()
 {
-    return 0;
+	Node* curr = top_;
+	size_t counter = 0;
+	if (top_ == NULL)
+		return 0;
+	else
+	{
+		while (curr)
+		{
+			counter++;
+			curr = curr->next;
+		}
+		return counter;
+	}
 }
 
 
@@ -315,4 +343,16 @@ bool Brackets(const string& input)
 // Query machine, hits
 void QueryMachine(vector<int>& data, vector<int>& queries, vector<unsigned int>& results)
 {
+	for (std::vector<int>::const_iterator queryNum = queries.begin(); queryNum != queries.end(); ++queryNum) //accessing queries' elements one by one
+	{
+		int counter = 0;
+		for (std::vector<int>::const_iterator dataNum = data.begin(); dataNum != data.end(); ++dataNum) //checking through the whole list of data
+		{
+			if (*queryNum == *dataNum)
+			{
+				counter++;
+			}
+		}
+		results.push_back(counter); 
+	}
 }
