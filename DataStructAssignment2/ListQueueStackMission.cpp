@@ -37,7 +37,17 @@ LinkedList::LinkedList() : head_(NULL)
 }
 
 LinkedList::~LinkedList()
-{ 
+{ //Deleting any left over nodes
+	if (size() != 0)
+	{
+		Node *deleteNode = head_;
+		while (deleteNode)
+		{
+			Node *next = deleteNode->next;
+			delete deleteNode;
+			deleteNode = next;
+		}
+	}
 }
 
 void LinkedList::push_front(int data)
@@ -51,10 +61,10 @@ void LinkedList::push_back(int data)
 {
 	Node *curr = head_;
 	Node *newNode = new Node(data);
-	while (curr->next)
+	while (curr->next) //Finding last node
 		curr = curr->next;
 	curr->next = newNode;
-	newNode->next = NULL;
+	newNode->next = NULL; //Emptying next of last node
 }
 
 int LinkedList::pop_front()
@@ -62,10 +72,9 @@ int LinkedList::pop_front()
 	if (head_ != NULL)
 	{
 		Node* temp = head_->next;
-		int dataPopped = head_->data;
-		head_ = NULL; //Setting pointer to NULL so that it can be deleted
-		delete head_;
-		head_ = temp;
+		int dataPopped = head_->data; //Value of data popped
+		delete head_; //Deleting head
+		head_ = temp; //Reassigning head
 		return dataPopped;
 	}
 
@@ -79,16 +88,16 @@ int LinkedList::pop_back()
 	{
 		Node* nextToEnd = head_;
 		Node* lastNode = head_->next;
-		int dataPopped = 0;
+		int dataPopped = 0; //Value of data popped
 
-		if (lastNode == NULL)
+		if (lastNode == NULL) //Checking for if the list only has one Node
 		{
 			return pop_front();
 		}
 
 		else
 		{
-			while (lastNode->next != NULL)
+			while (lastNode->next != NULL) //Finding the last node
 			{
 				nextToEnd = lastNode;
 				lastNode = lastNode->next;
@@ -96,9 +105,8 @@ int LinkedList::pop_back()
 
 
 			dataPopped = lastNode->data;
-			lastNode = NULL;
-			delete lastNode;
-			nextToEnd->next = NULL;
+			delete lastNode; //Deleting the last node
+			nextToEnd->next = NULL; //Emptying the last node
 			return dataPopped;
 		}
 		
@@ -177,7 +185,6 @@ int LinkedList::pop_at(int pos)
 				if ((*curr)->next != NULL)
 				{
 					(*prev)->next = (*curr)->next; //Removing node if at the right position
-					*curr = NULL;
 					delete *curr;
 					return nodePopped;
 				}
@@ -226,6 +233,17 @@ Queue::Queue() : front_(NULL), back_(NULL)
 
 Queue::~Queue()
 {   
+	//Deleting any left over nodes
+	if (size() != 0)
+	{
+		Node *deleteNode = front_;
+		while (deleteNode)
+		{
+			Node *next = deleteNode->next;
+			delete deleteNode;
+			deleteNode = next;
+		}
+	}
 }
 
 void Queue::enqueue(int data)
@@ -239,7 +257,7 @@ void Queue::enqueue(int data)
 	else
 	{
 		back_->next = newNode;
-		back_ = newNode;
+		back_ = newNode; //Moving back pointer to new node
 	}
 
 }
@@ -248,12 +266,11 @@ int Queue::dequeue()
 {
 	if (front_ != NULL)
 	{
-		Node** temp = &front_;
+		Node* temp = front_;
 		int dataPopped = front_->data;
-		Node* transfer = (*temp)->next;
-		*temp = NULL; //Setting pointer to NULL so that it can be deleted
-		delete *temp;
-		front_ = transfer;
+		Node* transfer = temp->next; //Skipping first node of the queue 
+		delete temp; //deleting front node
+		front_ = transfer; //Reassigning front node 
 		return dataPopped;
 	}
 	else
@@ -288,6 +305,17 @@ Stack::Stack() : top_(NULL)
 
 Stack::~Stack()
 {
+	//Deleting any left over nodes
+	if (size() != 0)
+	{
+		Node *deleteNode = top_;
+		while (deleteNode)
+		{
+			Node *next = deleteNode->next;
+			delete deleteNode;
+			deleteNode = next;
+		}
+	}
 }
 
 void Stack::push(int data)
@@ -304,7 +332,6 @@ int Stack::pop()
 		Node *nodePop = top_; //Pointing to top
 		int nodePopped = top_->data;
 		Node *nextNode = nodePop->next; //Ignoring first node of top, pointing to second node
-		nodePop = NULL;
 		delete nodePop;
 		top_ = nextNode; //Top is reassigned to its next node
 		return nodePopped;
