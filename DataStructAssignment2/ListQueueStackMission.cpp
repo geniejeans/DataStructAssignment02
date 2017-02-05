@@ -52,19 +52,26 @@ LinkedList::~LinkedList()
 
 void LinkedList::push_front(int data)
 {
-	Node *newNode = new Node(data);
-	newNode->next = head_;
-	head_ = newNode;
+	if (head_ != NULL)
+	{
+		Node *newNode = new Node(data);
+		newNode->next = head_;
+		head_ = newNode;
+	}
+
 }
 
 void LinkedList::push_back(int data)
 {
-	Node *curr = head_;
-	Node *newNode = new Node(data);
-	while (curr->next) //Finding last node
-		curr = curr->next;
-	curr->next = newNode;
-	newNode->next = NULL; //Emptying next of last node
+	if (head_ != NULL)
+	{
+		Node *curr = head_;
+		Node *newNode = new Node(data);
+		while (curr->next) //Finding last node
+			curr = curr->next;
+		curr->next = newNode;
+		newNode->next = NULL; //Emptying next of last node
+	}
 }
 
 int LinkedList::pop_front()
@@ -167,41 +174,48 @@ int LinkedList::pop_at(int pos)
 	int count = 0;
 
 	if (pos < 0) //For negative positions
-		pos = 0;
+	{
+		return	pop_front();
+	}
 
-	if (pos == 0)
+	else if (pos == 0)
 	{
 	    return	pop_front();
 	}
 
 	else
 	{
-		while (*curr != NULL)
+		if (head_ != NULL)
 		{
-			count++;
-			if (pos == count)
+			while (*curr != NULL)
 			{
-				nodePopped = (*curr)->data;
-				if ((*curr)->next != NULL)
+				count++;
+				if (pos == count)
 				{
-					(*prev)->next = (*curr)->next; //Removing node if at the right position
-					delete *curr;
-					return nodePopped;
-				}
+					nodePopped = (*curr)->data;
+					if ((*curr)->next != NULL)
+					{
+						(*prev)->next = (*curr)->next; //Removing node if at the right position
+						delete *curr;
+						return nodePopped;
+					}
 
+					else
+					{
+						return pop_back();
+					}
+				}
 				else
 				{
-					return pop_back();
+					*prev = *curr;
+					*curr = (*curr)->next;
 				}
 			}
-			else
-			{
-				*prev = *curr;
-				*curr = (*curr)->next;
-			}
+			//Returning values outside of for loop
+			if (pos > count) //if the value is over the number of positions
+				return 0;
 		}
-		if (pos > count) //if the value is over the number of positions
-			return 0;
+		return 0;
 	}
    
 }
@@ -364,7 +378,57 @@ size_t Stack::size()
 // Balanced parenthesis
 bool Brackets(const string& input)
 {
-    return true;
+	bool result = true;
+	vector<char> data; //Contains half of input & turning input string into a char
+	vector<char> reversedData;
+	int stringSize = input.size();
+	int counter = 0; //counter for accessing the vector
+	if (stringSize % 2 != 0)
+		return false;
+	for (int i = 0; i <= (stringSize / 2 - 1); i++) //Only getting half of the input, which is the opening parenthesis 
+	{
+		if ((input[i] == '(') || (input[i] == '{') || (input[i] == '[') || (input[i] == '<')) //Checking for opening parenthesis only 
+			data.push_back(input[i]);
+		else
+		{
+			result = false;
+			break;
+		}
+	}
+	//Reversing data
+	for (unsigned i = data.size(); i-- > 0;)
+	{
+		reversedData.push_back(data.at(i));
+	}
+
+   for (int i = stringSize / 2; i <= stringSize - 1; i++)
+   {
+	   //Conditions for if the parenthesis don't match up to its closing parenthesis
+	   if ((reversedData.at(counter) == '(') && (input[i] != ')'))
+	   {
+		   result = false;
+		   break;
+	   }
+	
+	   else if ((reversedData.at(counter) == '{') && (input[i] != '}'))
+	   {
+		   result = false;
+		   break;
+	   }
+	   else if ((reversedData.at(counter) == '[') && (input[i] != ']'))
+	   {
+		   result = false;
+		   break;
+	   }
+	   else if ((reversedData.at(counter) == '<') && (input[i] != '>'))
+	   {
+		   result = false;
+		   break;
+	   }
+	   counter++;
+   }
+
+   return result;
 }
 
 // Query machine, hits
